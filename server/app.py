@@ -11,7 +11,8 @@ load_dotenv()
 print(environ.get("FRONTEND_URL"))
 
 app = Flask(__name__)
-app.secret_key = environ.get("SECRET_KEY")
+# uncomment the following lines to enable session management
+# app.secret_key = environ.get("SECRET_KEY")
 
 CORS(
     app,

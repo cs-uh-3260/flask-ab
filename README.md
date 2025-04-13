@@ -9,9 +9,9 @@ Run
 
 `docker compose up --build -d`
 
-Go to [http://127.0.0.1:8000](http://127.0.0.1:8000) on your browser, and make sure that you can add a student successfull (just to make sure that you can run the system).
+Go to [http://127.0.0.1:8000](http://127.0.0.1:8000) on your browser, and make sure that you can add a student successfully (just to make sure that you can run the system).
 
-Note how the UI you see for the landing page simply has "Student Management System" as the header (this is what we have been seeing all along). 
+Note how the UI you see for the landing page simply has "Student Management System" as the header (this is what we have been seeing all along in our demos). 
 
 [Clear cookies from your browser](https://me-en.kaspersky.com/resource-center/preemptive-safety/how-to-clear-cache-and-cookies) (You can clear only the past hour), refresh the page and try again. You should still see the same message.
 
@@ -25,24 +25,26 @@ For the purposes of this exercise, we will just assume that this new design incl
 
 Now, let's see the simplest way we can implement this variant. We can assume that we will randomly assign users to the original variant (called `index_a.html`) or to the new variant (called `index_b.html`). Note that I have already created these variants. Originally, we would have only had one page called `index.html`.
 
-Go to `frontend/frontend.py` and comment Line 13 and uncomment Lines 15 - 25. These lines make use of the current session to add information to the session cookie about the current variant to serve. We assign this variant randomly. How you assign the variant depends on your experiment setup.
+Go to `frontend/frontend.py` and comment Line 17 and uncomment Lines 19 - 29 (You will find a comment telling you what to do). These lines add information to the response cookie about the current variant to serve. We assign this variant randomly. How you assign the variant depends on your experiment setup.
+We can use information later from this cookie to know which variant to serve.  
 
 Shut down your containers using `docker compose down` and run them again using `docker compose up --build -d`. Now, repeat the above steps of running your application, clearing the cookies, and refreshing a couple of times: you should see a different variant in some of these times where some of these variants would end up with the "-- NEW VARIANT" message.
 
 ### Step 2: Log the experiment results
 
-Ok, great we now have two variants, but how do I know which variant performed better? We need a way to track the experiment results.
+Ok, great we now have two variants, but how do we know which variant performed better? We need a way to track the experiment results.
 
-For the purposes of our small experiment, we will assume we care about how many times users clicked on the "List students" link in the two variants. 
+For the purposes of our small experiment, we will assume we care about how many times users clicked on the "List students" link in the two variants (in other words, how many times the backend list students endpoint was called). 
 
 So we will follow a set of steps:
 
-1. We will add a collection and related db functionality for recording experiment results in the DB. Notice the new file `server/db/ab_test.py` that I added? This has a function that records results of an event in the database in a collection called `ab_test_logs`. So this will be our way of saving an entry in the DB every time a user clicks on the List Students link. This entry will also tell us which variant the user was seeing at that time. Notice how the entry in the DB has the session id? Flask can automatically manage sessions based on a SECRET_KEY setup in the environment (you can find it in .env). You will see the new line `app.secret_key = environ.get("SECRET_KEY")` in `server/app.py` Line 14. We will generate a random unique value to become the session key.
-The session id helps us track if these clicks are coming in from the same browsing session or different ones. Since we don't have any user management or authentication right now, we will assume each unique session is a different user.
+1. We will add a new `ab_test_logs` collection in our db and the related db functionality for recording experiment results in a new file `server/db/ab_test.py`. This file is already created for you; just read it to understand it. It has a function `log_ab_test_event()` that records results of an event in the database in a collection called `ab_test_logs`; this will be our way of saving an entry in the DB every time a user clicks on the List Students link. This entry will also tell us which variant the user was seeing at that time. 
 
-2. Ok, but where is this session ID generated? Whenever, the end point we care about (fetching students gets hit), we want to either retrieve the current session key or generate a new one if the session has expired. See line 45 `server/api/student.py`, on Line 
+2. Notice how the entry in the DB has a session id? Flask can automatically manage sessions based on a SECRET_KEY setup in the environment (you can find it in .env). Uncomment line 15 in `server/app.py` Line 14 to set up the key flask needs to manage sessions.
 
-3. And where do we actually call the DB code that created in step 2.1? In the same API endpoint implementation of retrieving the student list in `server/api/student.py`, we will retrieve the variant from the cookies included in the request (recall that we set the cookies in the front end) and then call the db function we created to save the ab experiment results. 
+3. Ok, but where is this session ID generated? Whenever, the end point we care about (fetching students gets hit), we want to either retrieve the current session key or generate a new one if the session has expired. Uncomment line 44 in `server/api/student.py` which sets this session ID. Uncomment lines 23-26 to define the function `get_session_id` that we use. Note that the session id helps us track if these clicks are coming in from the same browsing session or different ones. Since we don't have any user management or authentication right now, we will assume each unique session is a different user.
+
+4. Ok cool, but where do we actually call `log_ab_test_event` that we created in step 2.1? In the same API endpoint implementation of retrieving the student list in `server/api/student.py`, we will retrieve the assigned variant from the cookies included in the request (recall that we set the cookies in the front end) and then call `log_ab_test_event` we created to save the ab experiment results. Uncomment lines 45-46.
 
 Shut down your containers using `docker compose down` and run them again using `docker compose up --build -d`. Now, repeat the above steps of running your application, clearing the cookies, and refreshing a couple of times: you should see a different variant in some of these times where some of these variants would end up with the "-- NEW VARIANT" message.
 
