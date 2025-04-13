@@ -98,3 +98,12 @@ You should get something similar to this:
 ### Upload your results to Brightspace
 
 Run the experiment as above, making sure to generate enough data. Run the queries in mongosh and take a screenshot of your results showing average clicks per user between the variants.
+
+
+## Using decorators to streamline your AB testing
+
+You can define custom decorators to help you manage your A/B testing. This allows you to leverage common code to create many A/B experiments without having to modify the code too much every time.
+
+You can read [https://realpython.com/primer-on-python-decorators/](https://realpython.com/primer-on-python-decorators/) to understand decorators more.
+
+You can also see the `snadi/ab-decorators` branch of this repo to see an example of how we could change the setup we have above to use decorators.
