@@ -28,7 +28,7 @@ Now, let's see the simplest way we can implement this variant. We can assume tha
 Go to `frontend/frontend.py` and comment Line 17 and uncomment Lines 19 - 29 (You will find a comment telling you what to do). These lines add information to the response cookie about the current variant to serve. We assign this variant randomly. How you assign the variant depends on your experiment setup.
 We can use information later from this cookie to know which variant to serve.  
 
-Shut down your containers using `docker compose down` and run them again using `docker compose up --build -d`. Now, repeat the above steps of running your application, clearing the cookies, and refreshing a couple of times: you should see a different variant in some of these times where some of these variants would end up with the "-- NEW VARIANT" message.
+Rebuild your containers use `docker compose up --build -d`. Now, repeat the above steps of running your application, clearing the cookies, and refreshing a couple of times: you should see a different variant in some of these times where some of these variants would end up with the "-- NEW VARIANT" message. If you can't see it, try decreasing the expiry time of the cookie to 20seconds and refresh every 20 seconds. You should see different variants being served.
 
 ### Step 2: Log the experiment results
 
@@ -46,7 +46,7 @@ So we will follow a set of steps:
 
 4. Ok cool, but where do we actually call `log_ab_test_event` that we created in step 2.1? In the same API endpoint implementation of retrieving the student list in `server/api/student.py`, we will retrieve the assigned variant from the cookies included in the request (recall that we set the cookies in the front end) and then call `log_ab_test_event` we created to save the ab experiment results. Uncomment lines 45-46.
 
-Shut down your containers using `docker compose down` and run them again using `docker compose up --build -d`. Now, repeat the above steps of running your application, clearing the cookies, and refreshing a couple of times: you should see a different variant in some of these times where some of these variants would end up with the "-- NEW VARIANT" message.
+Rebuild the containers `docker compose up --build -d`. Now, repeat the above steps of running your application, clearing the cookies, and refreshing a couple of times: similar to before, you should see a different variant in some of these times where some of these variants would end up with the "-- NEW VARIANT" message. In each of these variants, make sure to click on "List Students". You can even go back to the previous page and click on "List Students" again.
 
 ### Step 3
 

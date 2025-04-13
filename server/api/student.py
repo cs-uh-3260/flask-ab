@@ -20,10 +20,11 @@ STUDENT_CREATE_FLDS = api.model(
 
 # this is a helper function to get the session id
 # you may put this in a separate file if you want
-# def get_session_id():
-#     if "session_id" not in session:
-#         session["session_id"] = str(uuid.uuid4())
-#     return session["session_id"]
+# uncomment the function below to generate session keys
+def get_session_id():
+    if "session_id" not in session:
+        session["session_id"] = str(uuid.uuid4())
+    return session["session_id"]
 
 
 @api.route("/")
@@ -41,9 +42,9 @@ class StudentList(Resource):
         student_list = students.get_students(name, seniority)
 
         # Uncomment following lines to enable logging of A/B test events
-        # session_id = get_session_id()
-        # variant = request.cookies.get("ab_test_variant", "unknown")
-        # ab_test.log_ab_test_event(session_id, variant, "list_students_viewed")
+        session_id = get_session_id()
+        variant = request.cookies.get("ab_test_variant", "unknown")
+        ab_test.log_ab_test_event(session_id, variant, "list_students_viewed")
 
         return student_list, HTTPStatus.OK
 
