@@ -42,8 +42,8 @@ class StudentList(Resource):
 
         # Uncomment following lines to enable logging of A/B test events
         # log AB test event
-        variant = request.cookies.get("ab_test_variant", "unknown")
         session_id = get_session_id()
+        variant = request.cookies.get("ab_test_variant", "unknown")
         ab_test.log_ab_test_event(session_id, variant, "list_students_viewed")
 
         return student_list, HTTPStatus.OK
