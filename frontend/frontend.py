@@ -10,6 +10,7 @@ from os import environ
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = environ.get("SECRET_KEY")
 
 
 BACKEND_URL = environ.get("BACKEND_URL")
@@ -26,19 +27,19 @@ def get_session_id():
 
 @app.route("/")
 def home():
-    return render_template("index_a.html", backend_url=BACKEND_URL)
+    # return render_template("index_a.html", backend_url=BACKEND_URL)
     # Comment the above line and uncomment the following lines to enable A/B testing
-    # variant = request.cookies.get("ab_test_variant")
-    # if not variant:
-    #     variant = random.choice(["a", "b"])
-    # template_name = f"index_{variant}.html"
-    # # make_response(...) wraps the HTML string from render_template in a Response object.
-    # # such that we can set cookies on it.
-    # response = make_response(render_template(template_name, backend_url=BACKEND_URL))
-    # # We are putting a max time of 2 minutes on this session cookie
-    # # here just to make it faster for the demo
-    # response.set_cookie("ab_test_variant", variant, max_age=60 * 2)
-    # return response
+    variant = request.cookies.get("ab_test_variant")
+    if not variant:
+        variant = random.choice(["a", "b"])
+    template_name = f"index_{variant}.html"
+    # make_response(...) wraps the HTML string from render_template in a Response object.
+    # such that we can set cookies on it.
+    response = make_response(render_template(template_name, backend_url=BACKEND_URL))
+    # We are putting a max time of 2 minutes on this session cookie
+    # here just to make it faster for the demo
+    response.set_cookie("ab_test_variant", variant, max_age=60 * 2)
+    return response
 
 
 @app.route("/create_student")
@@ -48,11 +49,16 @@ def create_student():
 
 @app.route("/list_students")
 def list_students():
-    return render_template("list_students.html", backend_url=BACKEND_URL)
-    # variant = request.cookies.get("ab_test_variant", "unknown")
-    # log_ab_test_event(variant)
-
     # return render_template("list_students.html", backend_url=BACKEND_URL)
+    variant = request.cookies.get("ab_test_variant", "unknown")
+    session_id = get_session_id()
+
+    return render_template(
+        "list_students.html",
+        backend_url=BACKEND_URL,
+        variant=variant,
+        session_id=session_id,
+    )
 
 
 if __name__ == "__main__":

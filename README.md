@@ -25,31 +25,31 @@ For the purposes of this exercise, we will just assume that this new design incl
 
 Now, let's see the simplest way we can implement this variant. We can assume that we will randomly assign users to the original variant (called `index_a.html`) or to the new variant (called `index_b.html`). Note that I have already created these variants. Originally, we would have only had one page called `index.html`.
 
-Go to `frontend/frontend.py` and comment Line 13 and uncomment Lines 15 - 25. 
+Go to `frontend/frontend.py` and comment Line 13 and uncomment Lines 15 - 25. These lines make use of the current session to add information to the session cookie about the current variant to serve. We assign this variant randomly. How you assign the variant depends on your experiment setup.
 
 Shut down your containers using `docker compose down` and run them again using `docker compose up --build -d`. Now, repeat the above steps of running your applicant, clearing the cookies, and refreshing a couple of times: you should see a different variant in some of these times where some of these variants would end up with the "-- NEW VARIANT" message.
 
 ### Step 2: Log the experiment results
 
-Ok, great but how do I know which variant performed better? We need a way to track the experiment results.
+Ok, great we now have two variants, but how do I know which variant performed better? We need a way to track the experiment results.
 
-## Your Task
+For the purposes of our small experiment, we will assume we care about how many times users clicked on the "List students" link in the two variants. 
 
-Add another page for deleting a student. This page will communicate with the backend.
+So we will follow a set of steps:
 
-Try to think about what you need systematically:
+1. We will add a collection and related db functionality for recording experiment results in the DB. Notice the new file `server/db/ab_test.py` that I added? This has a function that records results of an event in the database. So this will be our way of saving an entry in the DB every time a user clicks on the List Students link. This entry will also tell us which variant the user was seeing at that time. Notice how the entry in the DB has the session id? The session id is automatically generated (based on a SECRET_KEY value in your environment) for each new session. It helps us track if these clicks are coming in from the same browsing session or different ones. Since we don't have any user management or authentication right now, we will assume each session is a different user.
 
-1. You need the html page that will contain the form for deleting a student (hint: we need to enter the email of the student we will delete). This will go into the templates/ folder
+2. Ok, now we need to actually call this function every time the user clicks on the link. We will keep our ab logging server side and assume that hitting the server get students endpoints means that the user clicked on the link.
 
-2. You need to specify what will happen when that forms gets submitted. This is the code that will go into the js/student.js script. It should be something similar to adding a student (i.e., you need to call the write backend endpoint)
+# Browsing data with mongosh
 
-3. You need to add a frontend url for this page. This will be another function and route in your frontend.py file
+Go to a new terminal
 
-4. Finally, add a link for this page on the index.html page
-
-Thus, in summary, you will need to edit/add the following files
-
-- create a new `delete_student.html` page in frontend/templates
-- add new javascript code for handling the submission of the delete student form in `frontend/static/js/students.js`
-- add the new frontend endpoint/url for delete student in `frontend/frontend.py`
-- add needed link in `index.html`
+```
+mongosh
+show databases # make sure you can see abdemo there
+use abdemo 
+show collections # this will display all collections
+db.students.find() # will display all students
+db.db.ab_test_logs.find() # will display all abtesting results
+```

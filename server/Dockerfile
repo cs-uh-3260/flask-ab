@@ -1,6 +1,7 @@
 FROM python:3.10-alpine
 
-COPY ../ .
+WORKDIR /app
+COPY . /app
 
 EXPOSE 6969
 

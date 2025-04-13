@@ -23,10 +23,15 @@
 
     <script>
         const API_URL = '{{ backend_url }}';  // Get URL from Flask
+        const VARIANT = '{{ variant }}';  // Get variant from Flask
+        const SESSION_ID = '{{ session_id }}';  // Get session ID from Flask
     </script>
     <script src="{{ url_for('static', filename='js/students.js') }}"></script>
     <script>
-        window.onload = fetchStudents;
+    window.onload = function () {
+        fetchStudents();
+        logListStudentsViewedAB();
+    };
     </script>
 </body>
 </html>

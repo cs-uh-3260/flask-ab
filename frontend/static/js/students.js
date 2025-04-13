@@ -57,3 +57,17 @@ function fetchStudents() {
             console.error("Error fetching students:", error);
         });
 }
+
+
+// call the funtion to log ab test event
+function logListStudentsViewedAB() {
+    axios.post(`${API_URL}/abtest/`, {
+        event_type: "list_students_viewed",
+        variant: `${VARIANT}`,
+        session_id: `${SESSION_ID}`,
+
+    })
+    .catch(error => {
+        console.error("Error logging AB test event:", error);
+    });
+}

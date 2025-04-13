@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Student Management System -- NEW VARIANT</h1>
+        <div class="links">
+            <ul>
+                <li><a href="{{ url_for('create_student') }}">Add Student</a></li>
+                <li><a href="{{ url_for('list_students') }}">List Students</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
