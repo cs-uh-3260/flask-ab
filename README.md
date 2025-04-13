@@ -1,38 +1,37 @@
+# Overview
+
+This repo provides two simple ways to implement AB testing. Note that this repo does not have authentication and thus we don't have user identities to attach a variant to or to track. In your project, you have user identities and accordingly, you can save the assigned variant to a user (or in a separate experiment collection) such that you can analyze metrics at a user level later after your experiment.
+
 
 ## How to run
 
-### Create virtual environment and install dependencies
+Run 
 
-```
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+`docker compose up --build -d`
 
-### Run the back end
+Go to [http://127.0.0.1:8000](http://127.0.0.1:8000) on your browser, and make sure that you can add a student successfull (just to make sure that you can run the system).
 
-```
-python app.py
-```
+Note how the UI you see for the landing page simply has "Student Management System" as the header (this is what we have been seeing all along). 
 
-### Run the front end
+[Clear cookies from your browser](https://me-en.kaspersky.com/resource-center/preemptive-safety/how-to-clear-cache-and-cookies) (You can clear only the past hour), refresh the page and try again. You should still see the same message.
 
-In a **different terminal**, navigate to the project's directory and run
+## A simple way to implement a variant -- frontend feature example
 
-```
-source .venv/bin/activate
-python frontend.py
-```
+### Step 1: Serve different variants
 
-## Exploring the current app
+Now assume that your design team said that this landing page is confusing and that users navigate away from it and don't end up using your system. They suggest a new design for this landing page, which is the new variant you now want to test in production.
 
-Go to your browser.
+For the purposes of this exercise, we will just assume that this new design includes a "-- NEW VARIANT" in the title.
 
-If you go to [http://localhost:8000](http://localhost:8000), you should see the front end of your app. The landing page is a page that lists the current available pages (Add student, List students)
+Now, let's see the simplest way we can implement this variant. We can assume that we will randomly assign users to the original variant (called `index_a.html`) or to the new variant (called `index_b.html`). Note that I have already created these variants. Originally, we would have only had one page called `index.html`.
 
-Click on the different links, and explore the pages.
+Go to `frontend/frontend.py` and comment Line 13 and uncomment Lines 15 - 25. 
 
-Go to the source code and try to map which parts of the code trigger the different functionality you see.
+Shut down your containers using `docker compose down` and run them again using `docker compose up --build -d`. Now, repeat the above steps of running your applicant, clearing the cookies, and refreshing a couple of times: you should see a different variant in some of these times where some of these variants would end up with the "-- NEW VARIANT" message.
+
+### Step 2: Log the experiment results
+
+Ok, great but how do I know which variant performed better? We need a way to track the experiment results.
 
 ## Your Task
 

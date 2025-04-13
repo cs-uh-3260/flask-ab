@@ -1,0 +1,48 @@
+services:
+    front-end:
+        container_name: demo-ab-frontend
+        image: demo-frontend-img
+        build: ./frontend
+        environment:
+            - BACKEND_URL=${BACKEND_URL}
+            - FRONTEND_URL=${FRONTEND_URL}
+        ports:
+            - "8000:8000"
+        depends_on:
+            - api-server
+        env_file:
+            - .env
+            
+    api-server:
+        container_name: demo-ab-backend
+        image: demo-backend-img
+        build: ./server
+        ports:
+            - "6969:6969"
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+            - DB_NAME=${DB_NAME}
+            - FRONTEND_URL=${FRONTEND_URL}
+        depends_on:
+            - mongo
+        env_file:
+            - .env        
+    mongo:
+        image: mongo:latest
+        container_name: demo-ab-mongo
+        ports:
+            - "27017:27017"
+        environment:
+            - MONGO_INITDB_DATABASE=${DB_NAME}
+        volumes:
+            - mongo-demo-data:/data/db
+        env_file:
+            - .env
+
+networks:
+    jobboard-network:
+        driver: bridge
+
+volumes:
+     mongo-demo-data:
+        driver: local

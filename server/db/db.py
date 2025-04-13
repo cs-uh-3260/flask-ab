@@ -1,12 +1,17 @@
 import pymongo
+from dotenv import load_dotenv
+from os import environ
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Global variable to hold the database client instance
 db_client = None
-db_name = "school_db"
+db_name = environ.get("DB_NAME")
 
 
 def init_db(app):
-    client = pymongo.MongoClient("mongodb://localhost:27017")
+    client = pymongo.MongoClient(environ.get("MONGODB_URI"))
     app.config["DB_CLIENT"] = client
     app.config["DB_NAME"] = db_name
     global db_client

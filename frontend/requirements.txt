@@ -1,0 +1,7 @@
+flask
+flask-restx
+flask_cors
+pymongo
+flask_cors
+gunicorn
+python-dotenv
