@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // list students
 
 function fetchStudents() {
-    axios.get(`${API_URL}/students/`) 
+    axios.get(`${API_URL}/students/`, { withCredentials: true }) 
         .then(response => {
             const students = response.data;
             const tableBody = document.querySelector("#students-table tbody");
@@ -56,18 +56,4 @@ function fetchStudents() {
         .catch(error => {
             console.error("Error fetching students:", error);
         });
-}
-
-
-// call the funtion to log ab test event
-function logListStudentsViewedAB() {
-    axios.post(`${API_URL}/abtest/`, {
-        event_type: "list_students_viewed",
-        variant: `${VARIANT}`,
-        session_id: `${SESSION_ID}`,
-
-    })
-    .catch(error => {
-        console.error("Error logging AB test event:", error);
-    });
 }
