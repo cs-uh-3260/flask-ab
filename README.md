@@ -40,7 +40,7 @@ So we will follow a set of steps:
 
 1. We will add a new `ab_test_logs` collection in our db and the related db functionality for recording experiment results in a new file `server/db/ab_test.py`. This file is already created for you; just read it to understand it. It has a function `log_ab_test_event()` that records results of an event in the database in a collection called `ab_test_logs`; this will be our way of saving an entry in the DB every time a user clicks on the List Students link. This entry will also tell us which variant the user was seeing at that time. 
 
-2. Notice how the entry in the DB has a session id? Flask can automatically manage sessions based on a SECRET_KEY setup in the environment (you can find it in .env). Uncomment line 15 in `server/app.py` Line 14 to set up the key flask needs to manage sessions.
+2. Notice how the entry in the DB has a session id? Flask can automatically manage sessions based on a SECRET_KEY setup in the environment (you can find it in .env). Uncomment line 15 in `server/app.py` to set up the key flask needs to manage sessions.
 
 3. Ok, but where is this session ID generated? Whenever, the end point we care about (fetching students gets hit), we want to either retrieve the current session key or generate a new one if the session has expired. Uncomment line 44 in `server/api/student.py` which sets this session ID. Uncomment lines 23-26 to define the function `get_session_id` that we use. Note that the session id helps us track if these clicks are coming in from the same browsing session or different ones. Since we don't have any user management or authentication right now, we will assume each unique session is a different user.
 
@@ -107,5 +107,3 @@ Run the experiment as above, making sure to generate enough data. Run the querie
 You can define custom decorators to help you manage your A/B testing. This allows you to leverage common code to create many A/B experiments without having to modify the code too much every time.
 
 You can read [https://realpython.com/primer-on-python-decorators/](https://realpython.com/primer-on-python-decorators/) to understand decorators more.
-
-You can also see the `snadi/ab-decorators` branch of this repo to see an example of how we could change the setup we have above to use decorators.
