@@ -4,7 +4,7 @@ from flask import jsonify, request
 from bson.json_util import dumps
 from db import students
 
-from ab_testing.ab_testing import ab_test_backend
+from ab_testing.ab_testing import ab_test_monitor
 
 api = Namespace("students", description="Endpoint for students")
 
@@ -27,7 +27,7 @@ class StudentList(Resource):
             "seniority": "Filter student list by student seniority (Exact seniority match)",
         }
     )
-    @ab_test_backend("landing_page")
+    @ab_test_monitor("landing_page")
     def get(self):
         name = request.args.get("name")
         seniority = request.args.get("seniority")

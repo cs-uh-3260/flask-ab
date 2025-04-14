@@ -3,7 +3,7 @@ from flask import request
 from ab_testing.utils import get_session_id
 from db import ab_test
 
-def ab_test_backend(experiment_name):
+def ab_test_monitor(experiment_name):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
