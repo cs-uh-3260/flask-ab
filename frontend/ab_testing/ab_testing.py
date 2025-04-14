@@ -12,7 +12,7 @@ def ab_test_frontend(experiment_name, variants):
             # We still have to set the cookie's value, i.e. the variant
             # Also, note that we set the cookie's max_age to 5 seconds to quickly check different variants
             # Change this to a longer duration accordingly
-            response.set_cookie("landing_page", variant, max_age=5)
+            response.set_cookie(experiment_name, variant, max_age=5)
             return response
         return wrapper
     return decorator
