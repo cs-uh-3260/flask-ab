@@ -106,4 +106,4 @@ Run the experiment as above, making sure to generate enough data. Run the querie
 
 You can define custom decorators to help you manage your A/B testing. This allows you to leverage common code to create many A/B experiments without having to modify the code too much every time.
 
-You can read [https://realpython.com/primer-on-python-decorators/](https://realpython.com/primer-on-python-decorators/) to understand decorators more.
+You can read [https://realpython.com/primer-on-python-decorators/](https://realpython.com/primer-on-python-decorators/) to understand decorators more. You can also see a sample solution using decorators in the [ab-decorators](https://github.com/cs-uh-3260/flask-ab/tree/ab-decorators) branch of this repo (thanks to Francisco for contributing this!). See the end of the README for that branch where he describes how you can use decorators to implement A/B testing.
